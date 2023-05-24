@@ -1,5 +1,5 @@
 import { QuizProvider } from "./context/QuizContext";
-import Quiz from "./components/Quiz";
+import Quiz from "./components/Quiz/Quiz";
 import "./App.css";
 
 function App() {
