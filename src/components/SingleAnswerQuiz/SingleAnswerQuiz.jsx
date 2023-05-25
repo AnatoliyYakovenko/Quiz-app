@@ -5,7 +5,18 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { nanoid } from 'nanoid'
 
-export default function ErrorRadios({answerItem, onChange, selectedValue}) {
+export default function SingleAnswerQuiz({answerItem, onChange, selectedValue}) {
+  
+  // const handleSingleAnswer =()=>{
+  //   const isCorrect = quizCorrectAnswers.every((answer) =>
+  //   selectedAnswers.includes(answer));
+
+  //   if (isCorrect) {
+  //     setScore(score + 1);
+  //   }
+  //   setSelectedAnswers([]);
+  //   setCurrentQuestion(currentQuestion + 1);
+  // };
 
   return (
    <div>

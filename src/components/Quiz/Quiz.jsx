@@ -19,37 +19,35 @@ const Quiz = () => {
     resetQuiz
   } = useContext(QuizContext);
 
-  const handleSingleAnswer =()=>{
-    const correctAnswers = questions[currentQuestion].correctAnswers;
 
-    const isCorrect = correctAnswers.every((answer) =>
-    selectedAnswers.includes(answer));
 
-    if (isCorrect) {
-      setScore(score + 1);
-    }
-    setSelectedAnswers([]);
-    setCurrentQuestion(currentQuestion + 1);
-  };
+
  
 
-  const handleAnswer = () => {
-    const correctAnswers = questions[currentQuestion].correctAnswers;
-    const sortedCorrectAnswers = correctAnswers.slice().sort();
-    const sortedSelectedAnswers = selectedAnswers.slice().sort();
+  const handleMultipleAnswer = () => {
+    const sortedCorrectAnswers = [...questions[currentQuestion].correctAnswers].sort();
+    const sortedSelectedAnswers = [...selectedAnswers].sort();
 
     const isCorrect = sortedCorrectAnswers.some((answer) =>
-    sortedSelectedAnswers.includes(answer)&&sortedSelectedAnswers.length===sortedCorrectAnswers);
+    sortedSelectedAnswers.includes(answer)&&sortedSelectedAnswers.length===sortedCorrectAnswers.length);
 console.log(sortedCorrectAnswers);
 console.log(sortedSelectedAnswers);
     if (isCorrect) {
       setScore(score + 1);
     }
-
     setSelectedAnswers([]);
     setCurrentQuestion(currentQuestion + 1);
   };
 
+  // const onSubmitAnswers = () =>{
+  //   if(questions[currentQuestion].multipleAnswers){
+  //     return handleMultipleAnswer();
+  //   }else{
+  //     return handleSingleAnswer();
+  //   }
+    
+  // }
+  console.log(score);
   const renderAnswers = () => {
     const handleChange = (e) => {
       const { value, checked } = e.target;
@@ -106,15 +104,14 @@ console.log(sortedSelectedAnswers);
       <form>
         {renderAnswers()}
       </form>
+
       <Button 
         type ="button"
-        onClick={handleAnswer}
+        onClick={handleMultipleAnswer}
         className={css.submitBtn}
         variant="contained" 
         // disabled={!isEnableSubmit}
         >Відповісти</Button>
-      {/* <button onClick={handleAnswer}>Відповісти</button> */}
-<p>Кількість балів: {score}</p>
 </div>
 );
 };
