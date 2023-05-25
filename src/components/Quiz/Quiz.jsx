@@ -31,24 +31,29 @@ const Quiz = () => {
         sortedSelectedAnswers.includes(answer) &&
         sortedSelectedAnswers.length === sortedCorrectAnswers.length
     );
-    if (isCorrect) {
-      setScore(score + 1);
-    }
-    setSelectedAnswers([]);
-    setCurrentQuestion(currentQuestion + 1);
+    isCorrectAnswer(isCorrect);
+    clearAndMoveToNextQuestion()
   };
   
   const handleSingleAnswer = () => {
     const isCorrect = questions[currentQuestion].correctAnswers.every((answer) =>
       selectedAnswers.includes(answer)
     );
-  
-    if (isCorrect) {
-      setScore(score + 1);
-    }
-    setSelectedAnswers([]);
-    setCurrentQuestion(currentQuestion + 1);
+    isCorrectAnswer(isCorrect);
+    clearAndMoveToNextQuestion();
   };
+
+const isCorrectAnswer =(isCorrect)=>{
+  if (isCorrect) {
+    setScore(score + 1);
+  }
+}
+const clearAndMoveToNextQuestion = () => {
+  setSelectedAnswers([]);
+  setCurrentQuestion(currentQuestion + 1);
+};
+
+
   const renderAnswers = () => {
     const handleChange = (e) => {
       const { value, checked } = e.target;
@@ -97,7 +102,7 @@ const Quiz = () => {
   }
   return (
     <div>
-      <h1>Питання {currentQuestion + 1}</h1>
+      <h1>Question {currentQuestion + 1}</h1>
       <h2>{questions[currentQuestion].question}</h2>
       <form>
         {renderAnswers()}
