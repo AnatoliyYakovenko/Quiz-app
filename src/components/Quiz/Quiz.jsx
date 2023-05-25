@@ -1,12 +1,13 @@
 
 import { useContext } from 'react';
-import { Button } from '@mui/material';
-import questions from '../../consts/questions';
+
+import questions from '../../const/questions';
 import { QuizContext } from '../../context/QuizContext';
-import ErrorRadios from '../RadioButtonList/RadioButtonList'
 
 import css from './Quiz.module.css';
-import CheckBoxList from '../CheckBoxList/CheckBoxList';
+import { ButtonCustom } from '../ButtonCustom/ButtonCustom';
+import SingleAnswerQuiz from '../SingleAnswerQuiz/SingleAnswerQuiz';
+import MultipleAnswerQuiz from '../MultipleAnswerQuiz/MultipleAnswerQuiz';
 
 const Quiz = () => {
   const {
@@ -19,35 +20,35 @@ const Quiz = () => {
     resetQuiz
   } = useContext(QuizContext);
 
-
-
-
- 
-
   const handleMultipleAnswer = () => {
-    const sortedCorrectAnswers = [...questions[currentQuestion].correctAnswers].sort();
+    const sortedCorrectAnswers = [
+      ...questions[currentQuestion].correctAnswers,
+    ].sort();
     const sortedSelectedAnswers = [...selectedAnswers].sort();
-
-    const isCorrect = sortedCorrectAnswers.some((answer) =>
-    sortedSelectedAnswers.includes(answer)&&sortedSelectedAnswers.length===sortedCorrectAnswers.length);
-console.log(sortedCorrectAnswers);
-console.log(sortedSelectedAnswers);
+  
+    const isCorrect = sortedCorrectAnswers.every(
+      (answer) =>
+        sortedSelectedAnswers.includes(answer) &&
+        sortedSelectedAnswers.length === sortedCorrectAnswers.length
+    );
     if (isCorrect) {
       setScore(score + 1);
     }
     setSelectedAnswers([]);
     setCurrentQuestion(currentQuestion + 1);
   };
-
-  // const onSubmitAnswers = () =>{
-  //   if(questions[currentQuestion].multipleAnswers){
-  //     return handleMultipleAnswer();
-  //   }else{
-  //     return handleSingleAnswer();
-  //   }
-    
-  // }
-  console.log(score);
+  
+  const handleSingleAnswer = () => {
+    const isCorrect = questions[currentQuestion].correctAnswers.every((answer) =>
+      selectedAnswers.includes(answer)
+    );
+  
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+    setSelectedAnswers([]);
+    setCurrentQuestion(currentQuestion + 1);
+  };
   const renderAnswers = () => {
     const handleChange = (e) => {
       const { value, checked } = e.target;
@@ -66,7 +67,7 @@ console.log(sortedSelectedAnswers);
     return questions[currentQuestion].answers.map((answer) => {
       if (questions[currentQuestion].multipleAnswers) {
         return (
-          <CheckBoxList
+          <MultipleAnswerQuiz
           onChecked= {selectedAnswers.includes(answer)}
           onChange={handleChange}
           answerItem={answer}
@@ -74,7 +75,7 @@ console.log(sortedSelectedAnswers);
         );
       } else {
         return (
-          <ErrorRadios
+          <SingleAnswerQuiz
           answerItem ={answer}
           onChange={handleRadioChange}
           selectedValue={selectedAnswers}
@@ -86,14 +87,11 @@ console.log(sortedSelectedAnswers);
   if (currentQuestion >= questions.length) {
     return (
       <div>
-        <h1>Кількість балів: {score}</h1>
-        <Button 
-        type ="button"
-        onClick={resetQuiz}
-        className={css.submitBtn}
-        variant="outlined" 
-        // disabled={!isEnableSubmit}
-        >Почати знову</Button>
+        <h1>Your scores: {score}</h1>
+        <ButtonCustom
+            onClick ={resetQuiz}
+            variant="outlined"
+            >Try again</ButtonCustom>
       </div>
     );
   }
@@ -104,14 +102,10 @@ console.log(sortedSelectedAnswers);
       <form>
         {renderAnswers()}
       </form>
-
-      <Button 
-        type ="button"
-        onClick={handleMultipleAnswer}
-        className={css.submitBtn}
-        variant="contained" 
-        // disabled={!isEnableSubmit}
-        >Відповісти</Button>
+      <ButtonCustom
+      onClick ={questions[currentQuestion].multipleAnswers ? handleMultipleAnswer : handleSingleAnswer}
+      variant="contained"
+      >Answer</ButtonCustom>
 </div>
 );
 };

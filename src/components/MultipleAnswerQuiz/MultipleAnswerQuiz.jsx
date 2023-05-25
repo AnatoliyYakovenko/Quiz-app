@@ -2,11 +2,11 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { nanoid } from 'nanoid'
 
-export default function CheckBoxList({answerItem, onChange, onChecked}) {
+export default function MultipleAnswerQuiz({answerItem, onChange, onChecked}) {
 
   return (
    <div>
-    <FormControlLabel
+    <FormControlLabel key={nanoid()}
       control={
         <Checkbox
           checked={onChecked}
@@ -16,6 +16,6 @@ export default function CheckBoxList({answerItem, onChange, onChecked}) {
       }
       label={answerItem}
     />
-    </div>
+      </div>
   );
 }
