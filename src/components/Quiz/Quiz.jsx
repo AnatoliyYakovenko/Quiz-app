@@ -1,13 +1,13 @@
+import { useContext } from "react";
+import { nanoid } from "nanoid";
 
-import { useContext } from 'react';
+import questions from "../../const/questions";
+import { QuizContext } from "../../context/QuizContext";
 
-import questions from '../../const/questions';
-import { QuizContext } from '../../context/QuizContext';
-
-import css from './Quiz.module.css';
-import { ButtonCustom } from '../ButtonCustom/ButtonCustom';
-import SingleAnswerQuiz from '../SingleAnswerQuiz/SingleAnswerQuiz';
-import MultipleAnswerQuiz from '../MultipleAnswerQuiz/MultipleAnswerQuiz';
+import css from "./Quiz.module.css";
+import { ButtonCustom } from "../ButtonCustom/ButtonCustom";
+import SingleAnswerQuiz from "../SingleAnswerQuiz/SingleAnswerQuiz";
+import MultipleAnswerQuiz from "../MultipleAnswerQuiz/MultipleAnswerQuiz";
 
 const Quiz = () => {
   const {
@@ -17,7 +17,7 @@ const Quiz = () => {
     setScore,
     setCurrentQuestion,
     setSelectedAnswers,
-    resetQuiz
+    resetQuiz,
   } = useContext(QuizContext);
 
   const handleMultipleAnswer = () => {
@@ -25,34 +25,33 @@ const Quiz = () => {
       ...questions[currentQuestion].correctAnswers,
     ].sort();
     const sortedSelectedAnswers = [...selectedAnswers].sort();
-  
+
     const isCorrect = sortedCorrectAnswers.every(
       (answer) =>
         sortedSelectedAnswers.includes(answer) &&
         sortedSelectedAnswers.length === sortedCorrectAnswers.length
     );
     isCorrectAnswer(isCorrect);
-    clearAndMoveToNextQuestion()
+    clearAndMoveToNextQuestion();
   };
-  
+
   const handleSingleAnswer = () => {
-    const isCorrect = questions[currentQuestion].correctAnswers.every((answer) =>
-      selectedAnswers.includes(answer)
+    const isCorrect = questions[currentQuestion].correctAnswers.every(
+      (answer) => selectedAnswers.includes(answer)
     );
     isCorrectAnswer(isCorrect);
     clearAndMoveToNextQuestion();
   };
 
-const isCorrectAnswer =(isCorrect)=>{
-  if (isCorrect) {
-    setScore(score + 1);
-  }
-}
-const clearAndMoveToNextQuestion = () => {
-  setSelectedAnswers([]);
-  setCurrentQuestion(currentQuestion + 1);
-};
-
+  const isCorrectAnswer = (isCorrect) => {
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+  };
+  const clearAndMoveToNextQuestion = () => {
+    setSelectedAnswers([]);
+    setCurrentQuestion(currentQuestion + 1);
+  };
 
   const renderAnswers = () => {
     const handleChange = (e) => {
@@ -61,7 +60,9 @@ const clearAndMoveToNextQuestion = () => {
       if (checked) {
         setSelectedAnswers([...selectedAnswers, value]);
       } else {
-        setSelectedAnswers(selectedAnswers.filter((answer) => answer !== value));
+        setSelectedAnswers(
+          selectedAnswers.filter((answer) => answer !== value)
+        );
       }
     };
 
@@ -70,49 +71,57 @@ const clearAndMoveToNextQuestion = () => {
     };
 
     return questions[currentQuestion].answers.map((answer) => {
-      if (questions[currentQuestion].multipleAnswers) {
-        return (
-          <MultipleAnswerQuiz
-          onChecked= {selectedAnswers.includes(answer)}
+      return questions[currentQuestion].multipleAnswers ? (
+        <MultipleAnswerQuiz
+          key={nanoid()}
+          onChecked={selectedAnswers.includes(answer)}
           onChange={handleChange}
           answerItem={answer}
-          />
-        );
-      } else {
-        return (
-          <SingleAnswerQuiz
-          answerItem ={answer}
+        />
+      ) : (
+        <SingleAnswerQuiz
+          key={nanoid()}
+          answerItem={answer}
           onChange={handleRadioChange}
           selectedValue={selectedAnswers}
-          />
-        );
-      }
+        />
+      );
     });
   };
   if (currentQuestion >= questions.length) {
     return (
-      <div>
-        <h1>Your scores: {score}</h1>
-        <ButtonCustom
-            onClick ={resetQuiz}
-            variant="outlined"
-            >Try again</ButtonCustom>
+      <div className={css.tryAgainWrapper}>
+        <h1>
+          Your scores: {score} from {questions.length}
+        </h1>
+        <ButtonCustom onClick={resetQuiz} variant="outlined">
+          Try again
+        </ButtonCustom>
       </div>
     );
   }
   return (
-    <div>
-      <h1>Question {currentQuestion + 1}</h1>
-      <h2>{questions[currentQuestion].question}</h2>
-      <form>
-        {renderAnswers()}
-      </form>
+    <div className={css.container}>
+      <h1 className={css.mainTitle}>Question {currentQuestion + 1}</h1>
+      <h2 className={css.question}>{questions[currentQuestion].question}</h2>
+      <form className={css.answersWrapper}>{renderAnswers()}</form>
+      {questions[currentQuestion].multipleAnswers ? (
+        <p className={css.notice}>* Select all that apply</p>
+      ) : (
+        ""
+      )}
       <ButtonCustom
-      onClick ={questions[currentQuestion].multipleAnswers ? handleMultipleAnswer : handleSingleAnswer}
-      variant="contained"
-      >Answer</ButtonCustom>
-</div>
-);
+        onClick={
+          questions[currentQuestion].multipleAnswers
+            ? handleMultipleAnswer
+            : handleSingleAnswer
+        }
+        variant="contained"
+      >
+        Answer
+      </ButtonCustom>
+    </div>
+  );
 };
 
 export default Quiz;

@@ -1,21 +1,25 @@
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { nanoid } from 'nanoid'
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
-export default function MultipleAnswerQuiz({answerItem, onChange, onChecked}) {
+import css from "./MultipleAnswerQuiz.module.css";
 
+export default function MultipleAnswerQuiz({
+  answerItem,
+  onChange,
+  onChecked,
+}) {
   return (
-   <div>
-    <FormControlLabel key={nanoid()}
-      control={
-        <Checkbox
-          checked={onChecked}
-          onChange={onChange}
-          value={answerItem}
-        />
-      }
-      label={answerItem}
-    />
-      </div>
+    <div className={css.multipleContainer}>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={onChecked}
+            onChange={onChange}
+            value={answerItem}
+          />
+        }
+        label={answerItem}
+      />
+    </div>
   );
 }

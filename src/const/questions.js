@@ -11,15 +11,14 @@ const questions = [
     multipleAnswers: false,
   },
   {
-    question:
-      "Which of the following are popular version control systems? (Select all that apply)",
+    question: "Which of the following are popular version control systems?",
     answers: ["Git", "SVN", "Mercurial", "Perforce"],
     correctAnswers: ["Git", "SVN", "Mercurial"],
     multipleAnswers: true,
   },
   {
     question:
-      "Which of the following are popular programming languages for building mobile apps? (Select all that apply)",
+      "Which of the following are popular programming languages for building mobile apps?",
     answers: ["C++", "Swift", "Python", "Kotlin"],
     correctAnswers: ["Swift", "Kotlin"],
     multipleAnswers: true,
