@@ -2,7 +2,7 @@ const questions = [
   {
     question: "What does HTML stand for?",
     answers: [
-      "Hyper Text Markup Language",
+      "HyperText Markup Language",
       "Hyperlinks and Text Markup Language",
       "Home Tool Markup Language",
       "Hyperlinking Textual Markup Language",
