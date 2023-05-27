@@ -1,24 +1,20 @@
-import { useContext } from "react";
-import { nanoid } from "nanoid";
+import { useSelector, useDispatch } from 'react-redux';
+import { nanoid } from 'nanoid';
 
-import questions from "../../const/questions";
-import { QuizContext } from "../../context/QuizContext";
+import { setScore, setCurrentQuestion, setSelectedAnswers, resetQuiz } from '../../redux/slice';
 
-import css from "./Quiz.module.css";
-import { ButtonCustom } from "../ButtonCustom/ButtonCustom";
-import SingleAnswerQuiz from "../SingleAnswerQuiz/SingleAnswerQuiz";
-import MultipleAnswerQuiz from "../MultipleAnswerQuiz/MultipleAnswerQuiz";
+import { ButtonCustom } from '../ButtonCustom/ButtonCustom';
+import SingleAnswerQuiz from '../SingleAnswerQuiz/SingleAnswerQuiz';
+import MultipleAnswerQuiz from '../MultipleAnswerQuiz/MultipleAnswerQuiz';
+import questions from '../../const/questions';
+
+import css from './Quiz.module.css';
 
 const Quiz = () => {
-  const {
-    score,
-    currentQuestion,
-    selectedAnswers,
-    setScore,
-    setCurrentQuestion,
-    setSelectedAnswers,
-    resetQuiz,
-  } = useContext(QuizContext);
+  const score = useSelector((state) => state.quiz.score);
+  const currentQuestion = useSelector((state) => state.quiz.currentQuestion);
+  const selectedAnswers = useSelector((state) => state.quiz.selectedAnswers);
+  const dispatch = useDispatch();
 
   const handleAnswer = () => {
     const question = questions[currentQuestion];
@@ -27,7 +23,7 @@ const Quiz = () => {
       : checkSingleAnswer(question);
 
     if (isCorrect) {
-      setScore((prevScore) => prevScore + 1);
+      dispatch(setScore(score + 1));
     }
 
     clearAndMoveToNextQuestion();
@@ -42,28 +38,27 @@ const Quiz = () => {
 
     return (
       sortedCorrectAnswers.length === sortedSelectedAnswers.length &&
-      sortedCorrectAnswers.every((answer) =>
-        sortedSelectedAnswers.includes(answer)
-      )
+      sortedCorrectAnswers.every((answer) => sortedSelectedAnswers.includes(answer))
     );
   };
 
   const clearAndMoveToNextQuestion = () => {
-    setSelectedAnswers([]);
-    setCurrentQuestion(currentQuestion + 1);
+    dispatch(setSelectedAnswers([]));
+    dispatch(setCurrentQuestion(currentQuestion + 1));
   };
+
   const handleChange = (e) => {
     const { value, checked } = e.target;
 
     if (checked) {
-      setSelectedAnswers([...selectedAnswers, value]);
+      dispatch(setSelectedAnswers([...selectedAnswers, value]));
     } else {
-      setSelectedAnswers(selectedAnswers.filter((answer) => answer !== value));
+      dispatch(setSelectedAnswers(selectedAnswers.filter((answer) => answer !== value)));
     }
   };
 
   const handleRadioChange = (event) => {
-    setSelectedAnswers(event.target.value);
+    dispatch(setSelectedAnswers(event.target.value));
   };
 
   const renderAnswers = () => {
@@ -87,13 +82,14 @@ const Quiz = () => {
       )
     );
   };
+
   if (currentQuestion >= questions.length) {
     return (
       <div className={css.tryAgainWrapper}>
         <h1>
           Your scores: {score} out of {questions.length}
         </h1>
-        <ButtonCustom onClick={resetQuiz} variant="outlined">
+        <ButtonCustom onClick={() => dispatch(resetQuiz())} variant="outlined">
           Try again
         </ButtonCustom>
       </div>
@@ -108,9 +104,7 @@ const Quiz = () => {
       <h1 className={css.mainTitle}>Question {currentQuestion + 1}</h1>
       <h2 className={css.question}>{question.question}</h2>
       <form className={css.answersWrapper}>{renderAnswers()}</form>
-      {isMultipleAnswer && (
-        <p className={css.notice}>* Select all that apply</p>
-      )}
+      {isMultipleAnswer && <p className={css.notice}>* Select all that apply</p>}
       <ButtonCustom onClick={handleAnswer} variant="contained">
         Answer
       </ButtonCustom>

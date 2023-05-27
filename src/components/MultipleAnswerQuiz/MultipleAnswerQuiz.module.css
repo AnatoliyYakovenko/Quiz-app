@@ -2,3 +2,6 @@
   display: flex;
   margin-top: 20px;
 }
+.MuiTypography-root.MuiTypography-body1.MuiFormControlLabel-label {
+  font-size: 50px;
+}
